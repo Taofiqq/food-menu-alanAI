@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react' 
+import alanBtn from '@alan-ai/alan-sdk-web';
+import './app.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const App = () => {
+    const [cart, setCart] = useState([]);
+    const [menuItems, setMenuItems] = useState([])
+
+
+useEffect(() => {
+  alanBtn({
+      key: 'b47ef1c09a03302dcd0dd70fa0a0ed2d2e956eca572e1d8b807a3e2338fdd0dc/stage',
+      onCommand: (commandData) => {
+        if(commandData.command === 'getMenu') {
+            setMenuItems(commandData.data)
+        }else if(commandData.command === 'addToCart') {
+            addToCart(commandData.data)
+        }
+      },
+  });
+}, []);
+
+    const addToCart = (item) => {
+        setCart((oldCart) => {
+            return [...oldCart, item];
+        })
+     }
+    return (
+        <div>
+            {menuItems.map(item => (
+                <li key={item.name}>
+                    {item.name} - ₦{item.price} - {item.category}
+                    <button onClick={() => addToCart(item)}>Add to cart</button>
+                    </li>
+            ))}
+
+            <h2>Food Menu</h2>
+            {cart.map(cartItem => (
+                 <li key={cartItem.name}>{cartItem.name} - #{cartItem.price} - {cartItem.category}</li>
+            ))}
+        </div>
+    )
 }
 
-export default App;
+export default App
