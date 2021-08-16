@@ -31,7 +31,7 @@ useEffect(() => {
             {menuItems.map(item => (
                 <li key={item.name}>
                     {item.name} - RM{item.price} - {item.category}
-                    <button onClick={() => addToCart(item)}>Add to cart</button>
+                    {/* <button onClick={() => addToCart(item)}>Add to cart</button> */}
                     </li>
             ))}
 
